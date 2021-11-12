@@ -29,62 +29,69 @@ var config Config
 func main() {
 	log.SetFormatter(&log.TextFormatter{FullTimestamp: true})
 	flag.Parse()
-	parseConfig()
-
-	r := 3600
-	if config.RefreshInterval > 0 {
-		r = config.RefreshInterval
-	}
 
 	go func() {
-		log.Info("Starting to collect metrics")
-		for {
-			collectMetrics()
-			time.Sleep(time.Duration(r) * time.Second)
+		err := config.Parse()
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		r := 3600
+		if config.RefreshInterval > 0 {
+			r = config.RefreshInterval
+		}
+
+		if config.Validate() {
+			log.Info("Starting to collect metrics")
+			for {
+				collectMetrics()
+				time.Sleep(time.Duration(r) * time.Second)
+			}
 		}
 	}()
 
 	http.Handle(*metricsPath, promhttp.Handler())
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte(`<html>
+		if _, err := w.Write([]byte(`<html>
              <head><title>RPKI Exporter</title></head>
              <body>
              <h1>RPKI Exporter</h1>
              <p><a href='` + *metricsPath + `'>Metrics</a></p>
              </body>
-             </html>`))
+             </html>`)); err != nil {
+			log.Fatal(err)
+		}
 	})
 	log.Fatal(http.ListenAndServe(*addr, nil))
 }
 
-func parseConfig() {
+func (c *Config) Parse() error {
 	cfgFile, err := ioutil.ReadFile(*configFile)
 	if err != nil {
-		log.Fatal(err.Error())
+		return err
 	}
 
-	err2 := yaml.Unmarshal(cfgFile, &config)
+	err2 := yaml.Unmarshal(cfgFile, &c)
 	if err2 != nil {
-		log.Fatal(err2.Error())
+		return err2
 	}
-
-	validateConfig()
-
-	log.Infof("Configuration file %v was parsed successfully \n", *configFile)
+	return nil
 }
 
-func validateConfig() {
+func (c Config) Validate() bool {
 	if len(config.Targets) == 0 {
-		log.Fatal("No targets detected in the configuration file")
+		log.Error("No targets detected in the configuration file")
+		return false
 	}
 
 	for _, c := range config.Targets {
-		if !validateASN(c.As) {
+		if c.As == 0 || c.As > 4200000000 {
 			log.Fatal("AS Number in the configuration file is either invalid or not defined")
 		}
 
 		if len(c.Prefixes) == 0 {
-			log.Fatalf("No prefixes defined for ASN: %v", c.As)
+			log.Errorf("No prefixes defined for ASN: %v", c.As)
+			return false
 		}
 
 		for _, prefix := range c.Prefixes {
@@ -94,11 +101,5 @@ func validateConfig() {
 			}
 		}
 	}
-}
-
-func validateASN(asn int) bool {
-	if (asn > 0) && (asn < 4200000000) {
-		return true
-	}
-	return false
+	return true
 }
