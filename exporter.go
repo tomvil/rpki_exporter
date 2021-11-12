@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/prometheus/client_golang/prometheus"
+	log "github.com/sirupsen/logrus"
 	"io/ioutil"
-	"log"
 	"net/http"
 )
 
@@ -73,7 +73,7 @@ func setPrefixRPKIStatus(prefix string, as int) {
 	responseData, err := requestGET(url)
 	if err != nil {
 		rpkiQueriesFailedTotal.Inc()
-		log.Println(err)
+		log.Error(err)
 		return
 	}
 
