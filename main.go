@@ -22,7 +22,7 @@ type Targets struct {
 }
 
 var addr = flag.String("listen-address", ":9959", "The address to listen on for HTTP requests.")
-var metricsPath = flag.String("metrics-path", "/metrics", "Location where metrics should be exposed")
+var metricsPath = flag.String("metrics-path", "/metrics", "Metrics location")
 var configFile = flag.String("config-file", "config.yaml", "Configuration file location")
 var config Config
 
