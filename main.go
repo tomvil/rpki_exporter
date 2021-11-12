@@ -3,9 +3,9 @@ package main
 import (
 	"flag"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
+	log "github.com/sirupsen/logrus"
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
-	"log"
 	"net"
 	"net/http"
 	"time"
@@ -27,6 +27,7 @@ var configFile = flag.String("config-file", "config.yaml", "Configuration file l
 var config Config
 
 func main() {
+	log.SetFormatter(&log.TextFormatter{FullTimestamp: true})
 	flag.Parse()
 	parseConfig()
 
@@ -36,7 +37,7 @@ func main() {
 	}
 
 	go func() {
-		log.Println("Starting to collect metrics")
+		log.Info("Starting to collect metrics")
 		for {
 			collectMetrics()
 			time.Sleep(time.Duration(r) * time.Second)
@@ -69,7 +70,7 @@ func parseConfig() {
 
 	validateConfig()
 
-	log.Printf("Configuration file %v was parsed successfully \n", *configFile)
+	log.Infof("Configuration file %v was parsed successfully \n", *configFile)
 }
 
 func validateConfig() {
