@@ -79,7 +79,7 @@ func setPrefixRPKIStatus(prefix string, as int) {
 
 	err2 := json.Unmarshal(responseData, &responseObject)
 	if err2 != nil {
-		log.Fatal("Failed to unmarshal response: %v", err2.Error())
+		log.Fatalf("Failed to unmarshal response: %v", err2.Error())
 	}
 
 	rpkiStatus.WithLabelValues(
