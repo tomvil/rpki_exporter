@@ -1,6 +1,6 @@
 refresh_interval: 3600
 targets:
-  - as: -15169
+  - as: 15169
     prefixes:
       - 2001:4860:4864::/48
       - 2404:6800:4001::/48
