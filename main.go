@@ -85,7 +85,7 @@ func (cfg Config) Validate() bool {
 	}
 
 	for _, c := range cfg.Targets {
-		if c.As == 0 || c.As > 4200000000 {
+		if c.As <= 0 || c.As > 4200000000 {
 			log.Fatal("AS Number in the configuration file is either invalid or not defined")
 		}
 
