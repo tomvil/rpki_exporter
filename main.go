@@ -65,26 +65,26 @@ func main() {
 	log.Fatal(http.ListenAndServe(*addr, nil))
 }
 
-func (c *Config) Parse() error {
+func (cfg *Config) Parse() error {
 	cfgFile, err := ioutil.ReadFile(*configFile)
 	if err != nil {
 		return err
 	}
 
-	err2 := yaml.Unmarshal(cfgFile, &c)
+	err2 := yaml.Unmarshal(cfgFile, &cfg)
 	if err2 != nil {
 		return err2
 	}
 	return nil
 }
 
-func (c Config) Validate() bool {
-	if len(config.Targets) == 0 {
+func (cfg Config) Validate() bool {
+	if len(cfg.Targets) == 0 {
 		log.Error("No targets detected in the configuration file")
 		return false
 	}
 
-	for _, c := range config.Targets {
+	for _, c := range cfg.Targets {
 		if c.As == 0 || c.As > 4200000000 {
 			log.Fatal("AS Number in the configuration file is either invalid or not defined")
 		}
