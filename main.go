@@ -2,13 +2,14 @@ package main
 
 import (
 	"flag"
-	"github.com/prometheus/client_golang/prometheus/promhttp"
-	log "github.com/sirupsen/logrus"
-	"gopkg.in/yaml.v2"
 	"io/ioutil"
 	"net"
 	"net/http"
 	"time"
+
+	"github.com/prometheus/client_golang/prometheus/promhttp"
+	log "github.com/sirupsen/logrus"
+	"gopkg.in/yaml.v2"
 )
 
 type Config struct {
@@ -36,16 +37,17 @@ func main() {
 			log.Fatal(err)
 		}
 
-		r := 3600
+		refreshInterval := 3600
 		if config.RefreshInterval > 0 {
-			r = config.RefreshInterval
+			refreshInterval = config.RefreshInterval
 		}
 
 		if config.Validate() {
 			log.Info("Starting to collect metrics")
+
 			for {
 				collectMetrics()
-				time.Sleep(time.Duration(r) * time.Second)
+				time.Sleep(time.Duration(refreshInterval) * time.Second)
 			}
 		}
 	}()
@@ -75,31 +77,35 @@ func (cfg *Config) Parse() error {
 	if err2 != nil {
 		return err2
 	}
+
 	return nil
 }
 
 func (cfg Config) Validate() bool {
 	if len(cfg.Targets) == 0 {
 		log.Error("No targets detected in the configuration file")
+
 		return false
 	}
 
-	for _, c := range cfg.Targets {
-		if c.As <= 0 || c.As > 4200000000 {
+	for _, target := range cfg.Targets {
+		if target.As <= 0 || target.As > 4200000000 {
 			log.Fatal("AS Number in the configuration file is either invalid or not defined")
 		}
 
-		if len(c.Prefixes) == 0 {
-			log.Errorf("No prefixes defined for ASN: %v", c.As)
+		if len(target.Prefixes) == 0 {
+			log.Errorf("No prefixes defined for ASN: %v", target.As)
+
 			return false
 		}
 
-		for _, prefix := range c.Prefixes {
+		for _, prefix := range target.Prefixes {
 			_, pNET, err := net.ParseCIDR(prefix)
 			if err != nil || prefix != pNET.String() {
 				log.Fatalf("Prefix is not valid: %v", prefix)
 			}
 		}
 	}
+
 	return true
 }

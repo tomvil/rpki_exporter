@@ -3,10 +3,11 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/prometheus/client_golang/prometheus"
-	log "github.com/sirupsen/logrus"
 	"io/ioutil"
 	"net/http"
+
+	"github.com/prometheus/client_golang/prometheus"
+	log "github.com/sirupsen/logrus"
 )
 
 type Response struct {
@@ -19,8 +20,8 @@ type Data struct {
 }
 
 type Route struct {
-	Origin_asn string
-	Prefix     string
+	OriginAsn string `json:"origin_asn"`
+	Prefix    string
 }
 
 type Validity struct {
@@ -74,6 +75,7 @@ func setPrefixRPKIStatus(prefix string, as int) {
 	if err != nil {
 		rpkiQueriesFailedTotal.Inc()
 		log.Error(err)
+
 		return
 	}
 
@@ -84,7 +86,7 @@ func setPrefixRPKIStatus(prefix string, as int) {
 
 	rpkiStatus.WithLabelValues(
 		responseObject.Data.Route.Prefix,
-		responseObject.Data.Route.Origin_asn).Set(status[responseObject.Data.Validity.State])
+		responseObject.Data.Route.OriginAsn).Set(status[responseObject.Data.Validity.State])
 
 	rpkiQueriesSuccessTotal.Inc()
 }
