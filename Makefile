@@ -19,7 +19,7 @@ clean:
 	rm -f rpki_exporter
 
 run:
-	./rpki_exporter --config-file config.example.yaml
+	go run . --config-file config.example.yaml
 
 compile:
 	GOARCH=amd64 GOOS=darwin go build -o ${PACKAGES_DIR}/rpki_exporter-${EXPORTER_VERSION}-darwin
