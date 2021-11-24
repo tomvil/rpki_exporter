@@ -12,7 +12,7 @@ This exporter uses `https://rpki-validator.ripe.net/` to check the status of rpk
 ## Configuration file
 Configuration example:
 ```
-refresh_interval: 3600 # not required, 3600 is the default value. Can be changed.
+refresh_interval: 3600 # not required, 3600 is the default value. It's here just to show that it can be changed if needed.
 targets:
   - as: 15169
     prefixes: # All prefixes must be a valid network address with a prefix at the end!
