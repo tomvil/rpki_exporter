@@ -37,17 +37,12 @@ func main() {
 			log.Fatal(err)
 		}
 
-		refreshInterval := 3600
-		if config.RefreshInterval > 0 {
-			refreshInterval = config.RefreshInterval
-		}
-
 		if config.Validate() {
 			log.Info("Starting to collect metrics")
 
 			for {
 				collectMetrics()
-				time.Sleep(time.Duration(refreshInterval) * time.Second)
+				time.Sleep(time.Duration(config.RefreshInterval) * time.Second)
 			}
 		}
 	}()
@@ -76,6 +71,10 @@ func (cfg *Config) Parse() error {
 	err2 := yaml.Unmarshal(cfgFile, &cfg)
 	if err2 != nil {
 		return err2
+	}
+
+	if cfg.RefreshInterval == 0 {
+		cfg.RefreshInterval = 3600
 	}
 
 	return nil

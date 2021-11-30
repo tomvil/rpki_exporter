@@ -52,8 +52,6 @@ var status = map[string]float64{
 	"not-found": 2,
 }
 
-var responseObject Response
-
 func init() {
 	prometheus.MustRegister(rpkiStatus)
 	prometheus.MustRegister(rpkiQueriesSuccessTotal)
@@ -69,6 +67,8 @@ func collectMetrics() {
 }
 
 func setPrefixRPKIStatus(prefix string, as int) {
+	var responseObject Response
+
 	url := fmt.Sprintf("https://rpki-validator.ripe.net/validity?asn=%v&prefix=%v", as, prefix)
 
 	responseData, err := requestGET(url)
@@ -96,6 +96,8 @@ func requestGET(url string) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	defer response.Body.Close()
 
 	if response.StatusCode != http.StatusOK {
 		return nil, fmt.Errorf("%v status returned: %v", url, response.StatusCode)
