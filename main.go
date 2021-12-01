@@ -14,12 +14,12 @@ import (
 )
 
 type Config struct {
-	RefreshInterval int `yaml:"refresh_interval"`
+	RefreshInterval uint `yaml:"refresh_interval"`
 	Targets         []Targets
 }
 
 type Targets struct {
-	As       uint
+	As       *uint
 	Prefixes []string
 }
 
@@ -29,7 +29,6 @@ var configFile = flag.String("config.file", "config.yaml", "Configuration file l
 var config Config
 
 func main() {
-	log.SetFormatter(&log.TextFormatter{FullTimestamp: true})
 	flag.Parse()
 
 	go func() {
@@ -92,15 +91,19 @@ func (cfg Config) Validate() error {
 		return fmt.Errorf("no targets detected in the configuration file")
 	}
 
-	for _, target := range cfg.Targets {
-		if target.As > 4294967295 {
-			return fmt.Errorf(
-				"AS Number in the configuration file is either invalid or not defined",
-			)
+	for n, target := range cfg.Targets {
+		n++
+
+		if target.As == nil {
+			return fmt.Errorf("target %v is missing AS number", n)
+		}
+
+		if *target.As > 4294967295 {
+			return fmt.Errorf("target %v has invalid AS number", n)
 		}
 
 		if len(target.Prefixes) == 0 {
-			return fmt.Errorf("no prefixes defined for ASN: %v", target.As)
+			return fmt.Errorf("no prefixes defined for AS%v", *target.As)
 		}
 
 		for _, prefix := range target.Prefixes {

@@ -61,7 +61,7 @@ func init() {
 func collectMetrics() {
 	for _, target := range config.Targets {
 		for _, prefix := range target.Prefixes {
-			go setPrefixRPKIStatus(prefix, target.As)
+			go setPrefixRPKIStatus(prefix, *target.As)
 		}
 	}
 }
