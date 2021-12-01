@@ -93,7 +93,7 @@ func (cfg Config) Validate() error {
 	}
 
 	for _, target := range cfg.Targets {
-		if target.As > 4200000000 {
+		if target.As > 4294967295 {
 			return fmt.Errorf(
 				"AS Number in the configuration file is either invalid or not defined",
 			)
