@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"io/ioutil"
 	"net"
 	"net/http"
@@ -37,14 +38,19 @@ func main() {
 			log.Fatal(err)
 		}
 
-		if config.Validate() {
-			log.Info("Starting to collect metrics")
-
-			for {
-				collectMetrics()
-				time.Sleep(time.Duration(config.RefreshInterval) * time.Second)
-			}
+		err2 := config.Validate()
+		if err2 != nil {
+			log.Error(err2)
+			return
 		}
+
+		log.Info("Starting to collect metrics")
+
+		for {
+			collectMetrics()
+			time.Sleep(time.Duration(config.RefreshInterval) * time.Second)
+		}
+
 	}()
 
 	http.Handle(*metricsPath, promhttp.Handler())
@@ -80,31 +86,29 @@ func (cfg *Config) Parse() error {
 	return nil
 }
 
-func (cfg Config) Validate() bool {
+func (cfg Config) Validate() error {
 	if len(cfg.Targets) == 0 {
-		log.Error("No targets detected in the configuration file")
-
-		return false
+		return fmt.Errorf("no targets detected in the configuration file")
 	}
 
 	for _, target := range cfg.Targets {
 		if target.As <= 0 || target.As > 4200000000 {
-			log.Fatal("AS Number in the configuration file is either invalid or not defined")
+			return fmt.Errorf(
+				"AS Number in the configuration file is either invalid or not defined",
+			)
 		}
 
 		if len(target.Prefixes) == 0 {
-			log.Errorf("No prefixes defined for ASN: %v", target.As)
-
-			return false
+			return fmt.Errorf("no prefixes defined for ASN: %v", target.As)
 		}
 
 		for _, prefix := range target.Prefixes {
 			_, pNET, err := net.ParseCIDR(prefix)
 			if err != nil || prefix != pNET.String() {
-				log.Fatalf("Prefix is not valid: %v", prefix)
+				return fmt.Errorf("prefix is not valid: %v", prefix)
 			}
 		}
 	}
 
-	return true
+	return nil
 }
