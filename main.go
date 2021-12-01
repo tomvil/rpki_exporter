@@ -74,7 +74,7 @@ func (cfg *Config) Parse() error {
 	}
 
 	if cfg.RefreshInterval == 0 {
-		cfg.RefreshInterval = 3600
+		cfg.RefreshInterval = 600
 	}
 
 	return nil
