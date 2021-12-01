@@ -41,6 +41,7 @@ func main() {
 		err2 := config.Validate()
 		if err2 != nil {
 			log.Error(err2)
+
 			return
 		}
 
