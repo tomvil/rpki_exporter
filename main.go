@@ -14,13 +14,13 @@ import (
 )
 
 type Config struct {
-	RefreshInterval int       `yaml:"refresh_interval"`
-	Targets         []Targets `yaml:"targets"`
+	RefreshInterval int `yaml:"refresh_interval"`
+	Targets         []Targets
 }
 
 type Targets struct {
-	As       int      `yaml:"as"`
-	Prefixes []string `yaml:"prefixes"`
+	As       int
+	Prefixes []string
 }
 
 var addr = flag.String("listen-address", ":9959", "The address to listen on for HTTP requests.")
