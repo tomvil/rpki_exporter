@@ -40,9 +40,9 @@ var rpkiQueriesFailedTotal = prometheus.NewCounter(
 		Help: "Number of failed queries",
 	})
 
-var rpkiQueriesSuccessTotal = prometheus.NewCounter(
+var rpkiQueriesSuccessfulTotal = prometheus.NewCounter(
 	prometheus.CounterOpts{
-		Name: "rpki_queries_success_total",
+		Name: "rpki_queries_successful_total",
 		Help: "Number of successful queries",
 	})
 
@@ -54,7 +54,7 @@ var status = map[string]float64{
 
 func init() {
 	prometheus.MustRegister(rpkiStatus)
-	prometheus.MustRegister(rpkiQueriesSuccessTotal)
+	prometheus.MustRegister(rpkiQueriesSuccessfulTotal)
 	prometheus.MustRegister(rpkiQueriesFailedTotal)
 }
 
@@ -88,7 +88,7 @@ func setPrefixRPKIStatus(prefix string, as int) {
 		responseObject.Data.Route.Prefix,
 		responseObject.Data.Route.OriginAsn).Set(status[responseObject.Data.Validity.State])
 
-	rpkiQueriesSuccessTotal.Inc()
+	rpkiQueriesSuccessfulTotal.Inc()
 }
 
 func requestGET(url string) ([]byte, error) {

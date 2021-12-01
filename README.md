@@ -42,9 +42,9 @@ config.file | Path to config file | config.yaml
 # HELP rpki_queries_failed_total Number of failed queries
 # TYPE rpki_queries_failed_total counter
 rpki_queries_failed_total 0
-# HELP rpki_queries_success_total Number of successful queries
-# TYPE rpki_queries_success_total counter
-rpki_queries_success_total 4
+# HELP rpki_queries_successful_total Number of successful queries
+# TYPE rpki_queries_successful_total counter
+rpki_queries_successful_total 4
 # HELP rpki_status RPKI Status of the prefix (0 - invalid, 1 - valid, 2 - not found)
 # TYPE rpki_status gauge
 rpki_status{asn="AS15169",prefix="2001:4860:4864::/48"} 1
