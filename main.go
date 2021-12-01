@@ -19,7 +19,7 @@ type Config struct {
 }
 
 type Targets struct {
-	As       int
+	As       uint
 	Prefixes []string
 }
 
@@ -93,7 +93,7 @@ func (cfg Config) Validate() error {
 	}
 
 	for _, target := range cfg.Targets {
-		if target.As <= 0 || target.As > 4200000000 {
+		if target.As > 4200000000 {
 			return fmt.Errorf(
 				"AS Number in the configuration file is either invalid or not defined",
 			)

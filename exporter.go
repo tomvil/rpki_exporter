@@ -66,7 +66,7 @@ func collectMetrics() {
 	}
 }
 
-func setPrefixRPKIStatus(prefix string, as int) {
+func setPrefixRPKIStatus(prefix string, as uint) {
 	var responseObject Response
 
 	url := fmt.Sprintf("https://rpki-validator.ripe.net/validity?asn=%v&prefix=%v", as, prefix)
