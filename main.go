@@ -23,9 +23,9 @@ type Targets struct {
 	Prefixes []string
 }
 
-var addr = flag.String("listen-address", ":9959", "The address to listen on for HTTP requests.")
-var metricsPath = flag.String("metrics-path", "/metrics", "Metrics location")
-var configFile = flag.String("config-file", "config.yaml", "Configuration file location")
+var addr = flag.String("web.listen-address", ":9959", "The address to listen on for HTTP requests.")
+var metricsPath = flag.String("web.metrics-path", "/metrics", "Metrics location")
+var configFile = flag.String("config.file", "config.yaml", "Configuration file location")
 var config Config
 
 func main() {

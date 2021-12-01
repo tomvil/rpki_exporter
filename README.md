@@ -11,7 +11,7 @@ This exporter uses `https://rpki-validator.ripe.net/` to check the status of rpk
 
 ## Configuration file
 Configuration example:
-```
+```yaml
 refresh_interval: 3600 # not required, 600 is the default value. It's here just to show that it can be changed if needed.
 targets:
   - as: 15169
@@ -27,15 +27,15 @@ targets:
 
 ## Usage
 1. Generate configuration file.
-2. `./rpki_exporter --config-file your-configuration-file.yaml`
-    - If `--config-file` flag is not set, by default exporter will try to open `config.yaml` file. 
+2. `./rpki_exporter --config.file your-configuration-file.yaml`
+    - If `--config.file` flag is not set, by default exporter will try to open `config.yaml` file. 
 
 ## Flags
 Name     | Description | Default
 ---------|-------------|---------
-listen-address | Address on which to expose metrics and web interface. | :9959
-metrics-path | Path under which to expose metrics. | /metrics
-config-file | Path to config file | config.yaml
+web.listen-address | Address on which to expose metrics and web interface. | :9959
+web.metrics-path | Path under which to expose metrics. | /metrics
+config.file | Path to config file | config.yaml
 
 ## Metrics
 ```
