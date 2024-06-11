@@ -47,9 +47,8 @@ rpki_queries_failed_total 0
 rpki_queries_successful_total 4
 # HELP rpki_status RPKI Status of the prefix (0 - invalid, 1 - valid, 2 - not found)
 # TYPE rpki_status gauge
-rpki_status{asn="AS15169",prefix="2001:4860:4864::/48"} 1
-rpki_status{asn="AS15169",prefix="2404:6800:4001::/48"} 1
-rpki_status{asn="AS15169",prefix="8.8.4.0/24"} 1
-rpki_status{asn="AS15169",prefix="8.8.8.0/24"} 1
+rpki_status{asn="AS15169",max_length="24",prefix="8.8.4.0/24"} 1
+rpki_status{asn="AS15169",max_length="24",prefix="8.8.8.0/24"} 1
+rpki_status{asn="AS15169",max_length="48",prefix="2001:4860:4864::/48"} 1
+rpki_status{asn="AS15169",max_length="48",prefix="2404:6800:4001::/48"} 1
 ```
-
