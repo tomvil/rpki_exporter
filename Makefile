@@ -22,6 +22,6 @@ run:
 	go run . --config.file config.example.yaml
 
 compile:
-	GOARCH=amd64 GOOS=darwin go build -o ${PACKAGES_DIR}/rpki_exporter-${EXPORTER_VERSION}-darwin
-	GOARCH=amd64 GOOS=linux go build -o ${PACKAGES_DIR}/rpki_exporter-${EXPORTER_VERSION}-linux
-	GOARCH=amd64 GOOS=windows go build -o ${PACKAGES_DIR}/rpki_exporter-${EXPORTER_VERSION}-windows
+	GOARCH=amd64 GOOS=darwin CGO_ENABLED=0 go build -o ${PACKAGES_DIR}/rpki_exporter-${EXPORTER_VERSION}-darwin
+	GOARCH=amd64 GOOS=linux CGO_ENABLED=0 go build -o ${PACKAGES_DIR}/rpki_exporter-${EXPORTER_VERSION}-linux
+	GOARCH=amd64 GOOS=windows CGO_ENABLED=0 go build -o ${PACKAGES_DIR}/rpki_exporter-${EXPORTER_VERSION}-windows
