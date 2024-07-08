@@ -25,12 +25,13 @@ type Route struct {
 }
 
 type Validity struct {
-	State    string
-	VRPs     VRPs
+	State string
+	VRPs  VRPs
 }
 
 type VRPs struct {
-	Matched []VRP `json:"matched"`
+	Matched         []VRP `json:"matched"`
+	UnmatchedLength []VRP `json:"unmatched_length"`
 }
 
 type VRP struct {
@@ -41,7 +42,7 @@ var rpkiStatus = prometheus.NewGaugeVec(
 	prometheus.GaugeOpts{
 		Name: "rpki_status",
 		Help: "RPKI Status of the prefix (0 - invalid, 1 - valid, 2 - not found)",
-	}, []string{"prefix", "asn", "max_length"})
+	}, []string{"prefix", "asn", "max_length", "unmatched_length"})
 
 var rpkiQueriesFailedTotal = prometheus.NewCounter(
 	prometheus.CounterOpts{
@@ -98,10 +99,16 @@ func setPrefixRPKIStatus(prefix string, as uint) {
 		maxLength = responseObject.Data.Validity.VRPs.Matched[0].MaxLength
 	}
 
+	unmatchedLength := "0"
+	if len(responseObject.Data.Validity.VRPs.UnmatchedLength) > 0 {
+		unmatchedLength = "1"
+	}
+
 	rpkiStatus.WithLabelValues(
 		responseObject.Data.Route.Prefix,
 		responseObject.Data.Route.OriginAsn,
-		maxLength).Set(status[responseObject.Data.Validity.State])
+		maxLength,
+		unmatchedLength).Set(status[responseObject.Data.Validity.State])
 
 	rpkiQueriesSuccessfulTotal.Inc()
 }
