@@ -23,13 +23,20 @@ type Targets struct {
 	Prefixes []string
 }
 
-var addr = flag.String("web.listen-address", ":9959", "The address to listen on for HTTP requests.")
-var metricsPath = flag.String("web.metrics-path", "/metrics", "Metrics location")
-var configFile = flag.String("config.file", "config.yaml", "Configuration file location")
-var config Config
+var (
+	addr        = flag.String("web.listen-address", ":9959", "The address to listen on for HTTP requests.")
+	metricsPath = flag.String("web.metrics-path", "/metrics", "Metrics location")
+	configFile  = flag.String("config.file", "config.yaml", "Configuration file location")
+	debug       = flag.Bool("debug", false, "Enable debug mode")
+	config      Config
+)
 
 func main() {
 	flag.Parse()
+
+	if *debug {
+		log.SetLevel(log.DebugLevel)
+	}
 
 	go func() {
 		err := config.Parse()

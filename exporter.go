@@ -80,18 +80,20 @@ func setPrefixRPKIStatus(prefix string, as uint) {
 	var responseObject Response
 
 	url := fmt.Sprintf("https://rpki-validator.ripe.net/validity?asn=%v&prefix=%v", as, prefix)
+	log.Debugf("Requesting %s", url)
 
 	responseData, err := requestGET(url)
 	if err != nil {
 		rpkiQueriesFailedTotal.Inc()
 		log.Error(err)
-
 		return
 	}
 
-	err2 := json.Unmarshal(responseData, &responseObject)
-	if err2 != nil {
-		log.Fatalf("Failed to unmarshal response: %v", err2)
+	log.Debugf("Response: %s", string(responseData))
+
+	err = json.Unmarshal(responseData, &responseObject)
+	if err != nil {
+		log.Fatalf("Failed to unmarshal response: %v", err)
 	}
 
 	maxLength := "NOT FOUND"
